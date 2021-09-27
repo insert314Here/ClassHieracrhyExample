@@ -34,7 +34,7 @@ namespace ClassHieracrhyExample
                 switch (Console.ReadLine().ToUpper())
                 {
                     case "S":
-                        StartGame();
+                        gameService.StartGame();
                         inputValid = true;
                         break;
                     case "C":
