@@ -1,4 +1,6 @@
 ﻿using ClassHieracrhyExample.Adventures;
+using ClassHieracrhyExample.Adventures.Interfaces;
+using ClassHieracrhyExample.Entities.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -7,26 +9,27 @@ namespace ClassHieracrhyExample.Game
 {
     public class GameService
     {
+        private IAdventureService adventureService;
+        private ICharacterService characterService;
 
-        public static void StartGame()
+        //each class needs at least a default constructor
+        public GameService(IAdventureService AdventureService,ICharacterService CharacterService)
         {
-            var basePath = $"{AppDomain.CurrentDomain.BaseDirectory}adventures";
-            var initialAdventure = new Adventure();
+            adventureService = AdventureService;
+            characterService = CharacterService;
+        }
 
-            if (File.Exists($"{basePath}\\initial.json"))
-            {
-                var directory = new DirectoryInfo(basePath);
-                var initialJsonFile = directory.GetFiles("initial.json");
+        
+        public void StartGame()
+        {
+            var initialAdventure = adventureService.GetInitialAdventure();
+            var initialCharacter = characterService.LoadInitialCharacter();
 
-                using (StreamReader fi = File.OpenText(initialJsonFile[0].FullName))
-                {
-                    initialAdventure = JsonConvert.DeserializeObject<Adventure>(fi.ReadToEnd());
-                }
+            Console.WriteLine($"Adventure : {initialAdventure.Title}");
+            Console.WriteLine($"Description : {initialAdventure.Description}");
 
-                Console.WriteLine($"Adventure : {initialAdventure.Title}");
-                Console.WriteLine($"Adventure : {initialAdventure.Description}");
-            }
-            Console.WriteLine("you started a new game");
+            Console.WriteLine($"Character Name : {initialCharacter.Name}");
+            Console.WriteLine($"Level : {initialCharacter.Level}");
         }
     }
 }
