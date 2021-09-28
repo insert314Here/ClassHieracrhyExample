@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ClassHieracrhyExample.Entities.Models
 {
-    public class Character
+    public class Character:Entity
     {
         public string Name;
         public int Level;
@@ -15,7 +15,8 @@ namespace ClassHieracrhyExample.Entities.Models
         public bool IsAlive;
         public int ArmorClass;
         public List<IItem> Inventory;
-        public int HitPoints;
+        
+        public CharacterClass Class;
     }
 
     public class Abilities
@@ -26,5 +27,10 @@ namespace ClassHieracrhyExample.Entities.Models
         public int Intelligence;
         public int Wisdom;
         public int Charisma;
+    }
+
+    public enum CharacterClass
+    {
+        Fighter,Thief,Warlock,Priest
     }
 }
