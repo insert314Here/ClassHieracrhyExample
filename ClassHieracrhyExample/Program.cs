@@ -1,11 +1,17 @@
-﻿using ClassHieracrhyExample.Game;
+﻿using ClassHieracrhyExample.Adventures;
+using ClassHieracrhyExample.Game;
 using System;
+using ClassHieracrhyExample.Adventures.Interfaces;
+using ClassHieracrhyExample.Entities;
 
 namespace ClassHieracrhyExample
 {
     class Program
     {
-        private static GameService gameService = new GameService();
+        private static AdventureService adventureService = new AdventureService();
+        private static CharacterService characterService = new CharacterService();
+        private static GameService gameService = new GameService(adventureService, characterService);
+
         static void Main(string[] args)
         {
             MakeTitle();
@@ -14,7 +20,7 @@ namespace ClassHieracrhyExample
 
         private static void MakeTitle()
         {
-            Console.WriteLine("Welcome to ThunderDomeZ...2 men enter...1 man leaves\n\n");
+            Console.WriteLine("This is the game");
 
         }
 
@@ -28,7 +34,7 @@ namespace ClassHieracrhyExample
                 switch (Console.ReadLine().ToUpper())
                 {
                     case "S":
-                        GameService.StartGame();
+                        gameService.StartGame();
                         inputValid = true;
                         break;
                     case "C":
@@ -49,6 +55,8 @@ namespace ClassHieracrhyExample
             }
 
         }
+
+        
 
         private static void MakeMenuOptions()
         {

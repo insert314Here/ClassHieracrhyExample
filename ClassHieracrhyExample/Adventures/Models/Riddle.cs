@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassHieracrhyExample
+namespace ClassHieracrhyExample.Adventures.Models
 {
-    class Paladin
+    public class Riddle
     {
-        
+        public string question;
+        public string answer;
     }
 }

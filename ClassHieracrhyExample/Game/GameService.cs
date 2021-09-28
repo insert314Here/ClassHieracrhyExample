@@ -1,32 +1,96 @@
 ﻿using ClassHieracrhyExample.Adventures;
-using Newtonsoft.Json;
+using ClassHieracrhyExample.Adventures.Interfaces;
+using ClassHieracrhyExample.Entities.Interfaces;
+using ClassHieracrhyExample.Entities.Models;
+using ClassHieracrhyExample.Game.Interfaces;
 using System;
-using System.IO;
 
 namespace ClassHieracrhyExample.Game
 {
-    public class GameService
+    public class GameService : IGameService
     {
+        private IAdventureService adventureService;
+        private ICharacterService characterService;
 
-        public static void StartGame()
+        private Character character;
+
+        //each class needs at least a default constructor
+        public GameService(IAdventureService AdventureService, ICharacterService CharacterService)
         {
-            var basePath = $"{AppDomain.CurrentDomain.BaseDirectory}adventures";
-            var initialAdventure = new Adventure();
+            adventureService = AdventureService;
+            characterService = CharacterService;
+        }
 
-            if (File.Exists($"{basePath}\\initial.json"))
+
+        public bool StartGame(Adventure adventure = null)
+        {
+            try
             {
-                var directory = new DirectoryInfo(basePath);
-                var initialJsonFile = directory.GetFiles("initial.json");
-
-                using (StreamReader fi = File.OpenText(initialJsonFile[0].FullName))
+                if (adventure == null)
                 {
-                    initialAdventure = JsonConvert.DeserializeObject<Adventure>(fi.ReadToEnd());
+                    adventure = adventureService.GetInitialAdventure();
                 }
 
-                Console.WriteLine($"Adventure : {initialAdventure.Title}");
-                Console.WriteLine($"Adventure : {initialAdventure.Description}");
+
+                Console.Clear();
+                Console.WriteLine();
+
+                #region Aedventure Title Banner
+                for (int i = 0; i <= adventure.Title.Length + 3; i++)
+                {
+                    Console.Write("*");
+                    if (i == adventure.Title.Length + 3)
+                    {
+                        Console.Write("\n");
+                    }
+                }
+                Console.WriteLine($"| {adventure.Title} |");
+
+                for (int i = 0; i <= adventure.Title.Length + 3; i++)
+                {
+                    Console.Write("*");
+                    if (i == adventure.Title.Length + 3)
+                    {
+                        Console.Write("\n");
+                    }
+                }
+                #endregion
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine($"\n{adventure.Description.ToUpper()}");
+
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Green;
+
+                var charactersInRange = characterService.GetCharactersInRange(adventure.MinLevel, adventure.MaxLevel);
+                if (charactersInRange.Count == 0)
+                {
+                    Console.WriteLine("You have no eligible characters in that range level for the adventure.");
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine("Watch out for the pig poop ;)");
+                    var characterCount = 0;
+                    foreach (var character in charactersInRange)
+                    {
+                        //the .properties only work because the character variable is ID'd in the foreach loop where CIR --> charService --> list from character.cs file is present
+
+                        Console.WriteLine($"Adventurer #{characterCount} {character.Name}: Level - {character.Level} {character.Class}");
+                        characterCount++;
+                    }
+                }
+                character = characterService.LoadCharacter(charactersInRange[Convert.ToInt32(Console.ReadLine())].Name);
+
+                
             }
-            Console.WriteLine("you started a new game");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"something went wrong {ex.Message}");
+            }
+            return true;
+
         }
     }
 }

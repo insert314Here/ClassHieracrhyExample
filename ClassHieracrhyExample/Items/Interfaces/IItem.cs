@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassHieracrhyExample
+namespace ClassHieracrhyExample.Items.Interfaces
 {
-    class Warlock
+    public interface IItem
     {
+
     }
 }
